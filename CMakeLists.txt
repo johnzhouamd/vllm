@@ -330,6 +330,30 @@ else()
     "requested architectures (${VLLM_GPU_ARCHES}) are supported, i.e. >= 8.0")
 endif()
 
+## TensorRT LLM #TODO
+#
+# tllm extension
+#
+
+set(TLLM_SRC
+  "csrc/tllm/tensorrt_llm/kernels/samplingTopKKernels.cu"
+)
+
+set(TLLM_INCLUDE_DIR
+  ${CMAKE_CURRENT_BINARY_DIR}/csrc/tllm;${CMAKE_CURRENT_BINARY_DIR}/csrc/tllm/include
+)
+
+define_gpu_extension_target(
+  _tllm_C
+  DESTINATION vllm
+  LANGUAGE ${VLLM_GPU_LANG}
+  SOURCES ${TLLM_SRC}
+  COMPILE_FLAGS ${VLLM_GPU_FLAGS}
+  ARCHITECTURES ${VLLM_GPU_ARCHES}
+  INCLUDE_DIRECTORIES ${TLLM_INCLUDE_DIR}
+  WITH_SOABI)
+## TensorRT LLM #TODO #END
+
 #
 # Add the `default` target which detects which extensions should be
 # built based on platform/architecture.  This is the same logic that
@@ -366,3 +390,12 @@ if(VLLM_GPU_LANG STREQUAL "HIP")
   message(STATUS "Enabling custom extension.")
   add_dependencies(default _custom_C)
 endif()
+
+## TensorRT LLM #TODO
+# add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/csrc/tllm)
+
+if(VLLM_GPU_LANG STREQUAL "HIP")
+  message(STATUS "Enabling tllm extension.")
+  add_dependencies(default _tllm_C)
+endif()
+## TensorRT LLM #TODO #END

@@ -394,6 +394,11 @@ if not _is_neuron():
     if _install_punica():
         ext_modules.append(CMakeExtension(name="vllm._punica_C"))
 
+## TensorRT LLM #TODO
+if _is_hip():
+    ext_modules.append(CMakeExtension(name="vllm._tllm_C"))
+## TensorRT LLM #TODO #END
+
 package_data = {
     "vllm": ["py.typed", "model_executor/layers/fused_moe/configs/*.json"]
 }

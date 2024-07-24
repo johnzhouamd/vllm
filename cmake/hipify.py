@@ -45,13 +45,27 @@ if __name__ == '__main__':
     # Get absolute path for all source files.
     extra_files = [os.path.abspath(s) for s in args.sources]
 
+    # For tllm, keep same output_dir and set header_include_dirs
+    if any('tensorrt_llm' in filepath for filepath in extra_files):
+        header_include_dirs = [args.output_dir + "/tllm/include", args.output_dir + "/tllm"]
+    else:
+        header_include_dirs = []
+
     # Copy sources from project directory to output directory.
     # The directory might already exist to hold object files so we ignore that.
     shutil.copytree(args.project_dir, args.output_dir, dirs_exist_ok=True)
 
+    print(f"hipify_result = hipify(project_directory={args.project_dir},")
+    print(f"                output_directory={args.output_dir},")
+    print(f"                header_include_dirs={header_include_dirs},")
+    print(f"                includes={includes},")
+    print(f"                extra_files={extra_files},")
+    print(f"                show_detailed=True,")
+    print(f"                is_pytorch_extension=True,")
+    print(f"                hipify_extra_files_only=True))")
     hipify_result = hipify(project_directory=args.project_dir,
                            output_directory=args.output_dir,
-                           header_include_dirs=[],
+                           header_include_dirs=header_include_dirs,
                            includes=includes,
                            extra_files=extra_files,
                            show_detailed=True,
