@@ -330,21 +330,22 @@ __device__ inline half2 cuda_cast<half2, half>(half val)
 template <>
 __device__ inline int8_t cuda_cast<int8_t, half>(half val)
 {
-    union
-    {
-        int8_t int8[2];
-        int16_t int16;
-    };
+    // union
+    // {
+    //     int8_t int8[2];
+    //     int16_t int16;
+    // };
 
-    union
-    {
-        half fp16;
-        int16_t int16_in;
-    };
+    // union
+    // {
+    //     half fp16;
+    //     int16_t int16_in;
+    // };
 
-    fp16 = val;
-    asm volatile("cvt.rni.sat.s8.f16 %0, %1;" : "=h"(int16) : "h"(int16_in));
-    return int8[0];
+    // fp16 = val;
+    // asm volatile("cvt.rni.sat.s8.f16 %0, %1;" : "=h"(int16) : "h"(int16_in));
+    // return int8[0];
+    return static_cast<int8_t>(val); //TODO
 }
 
 template <>
@@ -364,14 +365,15 @@ __device__ inline int16_t cuda_cast<int16_t, half2>(half2 val)
 template <>
 __device__ inline int8_t cuda_cast<int8_t, float>(float val)
 {
-    union
-    {
-        int8_t int8[2];
-        int16_t int16;
-    };
+    // union
+    // {
+    //     int8_t int8[2];
+    //     int16_t int16;
+    // };
 
-    asm volatile("cvt.rni.sat.s8.f32 %0, %1;" : "=h"(int16) : "f"(val));
-    return int8[0];
+    // asm volatile("cvt.rni.sat.s8.f32 %0, %1;" : "=h"(int16) : "f"(val));
+    // return int8[0];
+    return static_cast<int8_t>(val); //TODO
 }
 
 template <>

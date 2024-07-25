@@ -109,7 +109,7 @@ static char const* _cudaGetErrorEnum(cublasStatus_t error)
 
     case CUBLAS_STATUS_NOT_SUPPORTED: return "CUBLAS_STATUS_NOT_SUPPORTED";
 
-    case CUBLAS_STATUS_LICENSE_ERROR: return "CUBLAS_STATUS_LICENSE_ERROR";
+    // case CUBLAS_STATUS_LICENSE_ERROR: return "CUBLAS_STATUS_LICENSE_ERROR";
     }
     return "<unknown>";
 }
