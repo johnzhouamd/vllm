@@ -142,21 +142,27 @@ override_gpu_arches(VLLM_GPU_ARCHES
 # `VLLM_GPU_LANG`.
 # The final set of arches is stored in `VLLM_GPU_FLAGS`.
 #
-get_torch_gpu_compiler_flags(VLLM_GPU_FLAGS ${VLLM_GPU_LANG})
+get_torch_gpu_compiler_flags(VLLM_GPU_FLAGS_NO_FP8 ${VLLM_GPU_LANG})
 
 #
 # Set nvcc parallelism.
 #
 if(NVCC_THREADS AND VLLM_GPU_LANG STREQUAL "CUDA")
-  list(APPEND VLLM_GPU_FLAGS "--threads=${NVCC_THREADS}")
+  list(APPEND VLLM_GPU_FLAGS_NO_FP8 "--threads=${NVCC_THREADS}")
 endif()
 
 #
 # Set rocm version dev int.
 #
 if(VLLM_GPU_LANG STREQUAL "HIP")
-  list(APPEND VLLM_GPU_FLAGS "-DROCM_VERSION=${ROCM_VERSION_DEV_INT}")
+  list(APPEND VLLM_GPU_FLAGS_NO_FP8 "-DROCM_VERSION=${ROCM_VERSION_DEV_INT}")
 endif()
+
+#
+# add FP8
+#
+set(VLLM_GPU_FLAGS ${VLLM_GPU_FLAGS_NO_FP8})
+list(APPEND VLLM_GPU_FLAGS "-DENABLE_FP8")
 
 #
 # Define extension targets
@@ -348,7 +354,7 @@ define_gpu_extension_target(
   DESTINATION vllm
   LANGUAGE ${VLLM_GPU_LANG}
   SOURCES ${TLLM_SRC}
-  COMPILE_FLAGS ${VLLM_GPU_FLAGS}
+  COMPILE_FLAGS ${VLLM_GPU_FLAGS_NO_FP8}
   ARCHITECTURES ${VLLM_GPU_ARCHES}
   INCLUDE_DIRECTORIES ${TLLM_INCLUDE_DIR}
   WITH_SOABI)
